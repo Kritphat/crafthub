@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %} - {{ npc.name }}{% endblock %}
+{% block content %}
+<div class="panel npc">
+  {% if is_special %}
+    <img class="npc-img"
+         src="{{ url_for('static', filename='img/sultan_roblox.png') }}"
+         onerror="this.style.display='none'" alt="">
+  {% else %}
+    <img class="npc-img"
+         src="{{ url_for('static', filename='img/mobs/' ~ (npc.name|string) ~ '.png') }}"
+         onerror="this.style.display='none'" alt="">
+  {% endif %}
+
+  <h1>{{ npc.name }}</h1>
+  <table class="kv">
+    {% if is_special %}
+      <tr><th>Role</th><td>{{ npc.role }}</td></tr>
+      <tr><th>World</th><td>{{ npc.world }}</td></tr>
+    {% else %}
+      <tr><th>Category</th><td>{{ npc.type }}</td></tr>
+      <tr><th>World</th><td>{{ npc.world }}</td></tr>
+      <tr><th>Level</th><td>{{ npc.level }}</td></tr>
+    {% endif %}
+  </table>
+
+  {% if is_special %}
+    <div class="npc-note">
+      <h3>About</h3>
+      <p>This villager is one of our server developers. They are currently building a
+      personal trading website on their dev box at <code>{{ trade_url }}</code>.</p>
+    </div>
+
+    {% if flag %}
+      <div class="flag-box">{{ flag }}</div>
+    {% else %}
+      <a class="btn trade" href="{{ url_for('npc') }}?key={{ key }}&amp;trade=1">Trade</a>
+    {% endif %}
+  {% else %}
+    <p class="muted">Registry profile. No active trades.</p>
+    <a class="btn" href="{{ url_for('players') }}">Back to database</a>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %} - Register{% endblock %}
+{% block content %}
+<div class="form-card">
+  <h1>Create an account</h1>
+  {% if taunt %}
+    <div class="alert taunt">{{ taunt }}</div>
+  {% endif %}
+  <form method="post" action="{{ url_for('register') }}">
+    <label>Username</label>
+    <input type="text" name="username" autocomplete="off" required>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button class="btn" type="submit">Register</button>
+  </form>
+  <p class="muted small">Already a member? <a href="{{ url_for('login') }}">Sign in</a>.</p>
+</div>
+{% endblock %}

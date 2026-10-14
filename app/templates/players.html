@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %} - Players{% endblock %}
+{% block content %}
+<h1>Player &amp; Entity Database</h1>
+<p class="muted">Search the live registry of players, mobs and resources across all worlds.</p>
+
+<form method="get" action="{{ url_for('players') }}" class="search">
+  <input type="text" name="search" value="{{ search }}" placeholder="Search the registry...">
+  <button class="btn" type="submit">Search</button>
+</form>
+
+<div class="filter-bar" id="filterBar">
+  <button type="button" class="chip active" data-filter="all">All</button>
+  <button type="button" class="chip" data-filter="skin">Skin</button>
+  <button type="button" class="chip" data-filter="monster">Monster</button>
+  <button type="button" class="chip" data-filter="villager">Villager</button>
+  <button type="button" class="chip" data-filter="ore">Ore</button>
+</div>
+
+{% if error %}
+  <div class="alert db-error">{{ error }}</div>
+{% endif %}
+
+<div class="card-grid" id="cardGrid">
+  {% for r in rows %}
+    {% set tags = [r.type|string, r.world|string] %}
+    <div class="ecard collapsed" data-tags="{{ tags|join(' ') }}">
+      <img class="ecard-img"
+           src="{{ url_for('static', filename='img/mobs/' ~ (r.name|string) ~ '.png') }}"
+           onerror="this.onerror=null;this.src='data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='"
+           alt="" title="Click to show details"
+           role="button" tabindex="0" aria-expanded="false">
+      <div class="ecard-name">{{ r.name }}</div>
+      <dl class="ecard-meta">
+        <div><dt>ID</dt><dd>{{ r.id }}</dd></div>
+        <div><dt>Type</dt><dd>{{ r.type }}</dd></div>
+        <div><dt>World</dt><dd>{{ r.world }}</dd></div>
+        <div><dt>Level</dt><dd>{{ r.level }}</dd></div>
+        <div><dt>Secret</dt><dd>{{ r.secret_key }}</dd></div>
+      </dl>
+      <div class="ecard-tags">
+        {% for t in tags %}<span class="badge">{{ t }}</span>{% endfor %}
+      </div>
+      {% set k = entity_keys.get(r.name|string) if entity_keys else None %}
+      {% if k %}
+        <a class="ecard-link" href="{{ url_for('npc') }}?key={{ k }}">View profile</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="muted">No entities found.</p>
+  {% endfor %}
+</div>
+
+<script>
+(function () {
+  var bar = document.getElementById('filterBar');
+  var cards = document.querySelectorAll('#cardGrid .ecard');
+  if (!bar) return;
+  cards.forEach(function (card) {
+    var img = card.querySelector('.ecard-img');
+    if (!img) return;
+    function toggle() {
+      var open = card.classList.toggle('collapsed');
+      img.setAttribute('aria-expanded', open ? 'false' : 'true');
+    }
+    img.addEventListener('click', toggle);
+    img.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+  bar.addEventListener('click', function (e) {
+    var btn = e.target.closest('.chip');
+    if (!btn) return;
+    bar.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
+    btn.classList.add('active');
+    var f = btn.getAttribute('data-filter');
+    cards.forEach(function (card) {
+      var tags = (card.getAttribute('data-tags') || '').split(' ');
+      card.style.display = (f === 'all' || tags.indexOf(f) > -1) ? '' : 'none';
+    });
+  });
+})();
+</script>
+{% endblock %}

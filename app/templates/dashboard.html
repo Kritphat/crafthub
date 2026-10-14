@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %} - Dashboard{% endblock %}
+{% block content %}
+<h1>Hi, {{ user }}</h1>
+
+{% if is_admin %}
+  <div class="panel">
+    <h2>Admin Control Panel</h2>
+    <p class="muted">You have administrator access to the CraftHub network.
+    Jump to the <a href="{{ url_for('players') }}">player &amp; entity database</a>.</p>
+
+    <h3>Registered Customers ({{ customers|length }})</h3>
+    <table class="grid">
+      <thead>
+        <tr><th>#</th><th>Customer</th><th>Email</th><th>Joined</th><th>Orders</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for c in customers %}
+          <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.joined }}</td>
+            <td>{{ c.orders }}</td>
+            <td>{{ c.status }}</td>
+          </tr>
+        {% endfor %}
+        <tr class="flag-row">
+          <td colspan="6">{{ flag }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="panel">
+    <h2>Your Profile</h2>
+    <p class="muted">Thanks for joining CraftHub. There is nothing to manage here yet. See you in game!</p>
+  </div>
+{% endif %}
+{% endblock %}

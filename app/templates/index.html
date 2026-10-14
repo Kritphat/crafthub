@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <img src="{{ url_for('static', filename='img/hero.png') }}" alt="" class="hero-img">
+  <div class="hero-text">
+    <span class="owner-badge">Owner</span>
+    <h1>Hi, I'm the Owner of this website</h1>
+    <p>Welcome to CraftHub! I run this server myself. Build, trade, and climb the
+    leaderboards with hundreds of players online every day. The friendliest
+    survival and economy community around.</p>
+    <a class="btn" href="{{ url_for('register') }}">Join the server</a>
+  </div>
+</section>
+
+<section class="featured">
+  <h2>Featured on the server</h2>
+  <div class="mob-strip">
+    {% for m in ['steve','creeper','zombie','enderman','skeleton','villager'] %}
+      <figure>
+        <img src="{{ url_for('static', filename='img/mobs/' ~ m ~ '.png') }}"
+             onerror="this.onerror=null;this.src='{{ url_for('static', filename='img/player.png') }}'"
+             alt="{{ m }}">
+        <figcaption>{{ m }}</figcaption>
+      </figure>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cards">
+  <div class="card">
+    <h3>Survival Worlds</h3>
+    <p>Overworld, Nether and End worlds reset seasonally. Claim your land and defend your builds.</p>
+  </div>
+  <div class="card">
+    <h3>Player Economy</h3>
+    <p>Earn emeralds, open shops, and trade with villagers and other players in the marketplace.</p>
+  </div>
+  <div class="card">
+    <h3>Events &amp; Bosses</h3>
+    <p>Weekend boss fights and build contests with real in-game rewards for the whole community.</p>
+  </div>
+</section>
+{% endblock %}
